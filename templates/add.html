@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% from 'bootstrap5/form.html' import render_form %}
+<!--if you want to add a pre-rendered form, always import render_form from 'bootstrap5/form.html'-->
+{% block title %}Add Movie{% endblock %}
+
+{% block content %}
+<div class="content">
+    <h1 class="heading">Add a Movie</h1>
+		{{ render_form(form) }}
+</div>
+{% endblock %}

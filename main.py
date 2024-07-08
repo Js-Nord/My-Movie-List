@@ -9,12 +9,13 @@ from wtforms.validators import DataRequired
 import requests
 import os
 
-MOVIE_API = "https://api.themoviedb.org/3/search/movie"
+MOVIE_API = "https://api.themoviedb.org/3/search/movie" # or prefered API
+
 TOKEN = os.environ.get("TOKEN")
 
 headers = {
     "accept": "application/json",
-    "Authorization": f"Bearer {TOKEN}"
+    "Authorization": f"Bearer {YOUR_TOKEN_HERE}"
 }
 
 
@@ -47,7 +48,6 @@ class Movie(db.Model):
     review: Mapped[str] = mapped_column(String(1000), nullable=True)
     img_url: Mapped[str] = mapped_column(String, nullable=False)
 
-    # IMPORTANT: REMEMBER THAT THE DEFAULT VALUE FOR NULLABLE IS ALWAYS FALSE, SO SET TO TRUE IF YOU WANT IT EMPTY.
 
 
 class MovieForm(FlaskForm):

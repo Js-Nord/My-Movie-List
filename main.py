@@ -9,13 +9,12 @@ from wtforms.validators import DataRequired
 import requests
 import os
 
-MOVIE_API = "https://api.themoviedb.org/3/search/movie" # or prefered API
-
+MOVIE_API = "https://api.themoviedb.org/3/search/movie"
 TOKEN = os.environ.get("TOKEN")
 
 headers = {
     "accept": "application/json",
-    "Authorization": f"Bearer {YOUR_TOKEN_HERE}"
+    "Authorization": f"Bearer {TOKEN}"
 }
 
 
@@ -92,23 +91,23 @@ def select():
     response_details = requests.get(details_api, headers=headers).json()
     new_movie = Movie(
         title=response_details["original_title"],
-        year=response_details["release_date"],
+        year=response_details["release_date"].split("-")[0],
         description=response_details["overview"],
         img_url=f"https://image.tmdb.org/t/p/w500{response_details['poster_path']}"
     )
     db.session.add(new_movie)
     db.session.commit()
-    return redirect(url_for("edit"))
+    return redirect(url_for("edit", id=new_movie.id))
 
 
 @app.route("/edit", methods=["GET", "POST"])
 def edit():
     form = RatingForm()
+    movie_id = request.args.get("id")
+    movie = db.get_or_404(Movie, movie_id)
     if form.validate_on_submit():
-        result = db.session.execute(db.select(Movie).order_by(Movie.title))
-        actual_movie = result.scalar()
-        actual_movie.rating = form.rating.data
-        actual_movie.review = form.review.data
+        movie.rating = form.rating.data
+        movie.review = form.review.data
         db.session.commit()
         return redirect(url_for("home"))
     return render_template("edit.html", form=form)
@@ -125,3 +124,4 @@ def delete():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
